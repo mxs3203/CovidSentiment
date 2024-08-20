@@ -117,23 +117,22 @@ import matplotlib.dates as mdates
 # plt.show()
 #
 #
-# data = pd.read_excel("data/COVID-data.xlsx")
-# data['Datetime'] = pd.to_datetime(data['date'])
-# data['YearMonth'] = data['Datetime'].dt.to_period('M')
-# monthly_avg = data.groupby(['location', 'YearMonth']).mean().reset_index()
-# monthly_avg['YearMonth'] = monthly_avg['YearMonth'].dt.to_timestamp()
-#
-# plt.Figure((8,5))
-# sb.lineplot(x='YearMonth', y='new_deaths', hue='location', data=monthly_avg, style=False,
-#             linewidth=2, markers='o', dashes=[(None, None)], palette='Set1')
-# plt.title('Comparison of Scores Over Time by SITE')
-# plt.xlabel('Date')
-# plt.ylabel('Score')
-# plt.yscale('log')
-# # Formatting x-axis to show both month and year
-# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
-# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-# plt.xticks(rotation=90, fontsize=8)
-# plt.tight_layout()
-# plt.savefig('plots/figure4_part2.pdf')
-# plt.show()
+data = pd.read_excel("data/COVID-data.xlsx")
+data['Datetime'] = pd.to_datetime(data['date'])
+data['YearMonth'] = data['Datetime'].dt.to_period('M')
+monthly_avg = data.groupby(['location', 'YearMonth']).mean().reset_index()
+monthly_avg['YearMonth'] = monthly_avg['YearMonth'].dt.to_timestamp()
+
+plt.Figure((8,5))
+sb.lineplot(x='YearMonth', y='new_deaths', hue='location', data=monthly_avg, style=False,
+            linewidth=2, markers='o', dashes=[(None, None)], palette='Set1')
+plt.title('Comparison of Scores Over Time by SITE')
+plt.xlabel('Date')
+plt.yscale('log')
+# Formatting x-axis to show both month and year
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+plt.xticks(rotation=90, fontsize=8)
+plt.tight_layout()
+plt.savefig('plots/figure4_part3.pdf')
+plt.show()
