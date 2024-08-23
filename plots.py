@@ -82,57 +82,103 @@ import matplotlib.dates as mdates
 '''
     Figure 4
 '''
-# data['Datetime'] = pd.to_datetime(data['DATE'])
-# data['YearMonth'] = data['Datetime'].dt.to_period('M')
-# monthly_avg = data.groupby(['SITE', 'YearMonth']).mean().reset_index()
-# monthly_avg['YearMonth'] = monthly_avg['YearMonth'].dt.to_timestamp()
-# sites = monthly_avg['SITE'].unique()
-# n_sites = len(sites)
-# ncols = 1  # Number of columns in the subplot grid
-# nrows = 4 # Calculate number of rows needed
-#
-# fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(12, 8), sharex=True, sharey=True)
-# axes = axes.flatten()
-# for i, site in enumerate(sites):
-#     ax = axes[i]
-#     site_data = monthly_avg[monthly_avg['SITE'] == site]
-#
-#     sb.lineplot(x='YearMonth', y='TEXT_decision_social_prob', data=site_data, ax=ax, linewidth=2,
-#                   label='TEXT_prob', color='#304269', marker='o')
-#     sb.lineplot(x='YearMonth', y='HEADLINE_decision_social_prob', data=site_data, ax=ax, linewidth=2,
-#                  label='HEADLINE_prob', color='#F26101',marker='o')
-#     ax.axhline(y=0, color='red', linestyle='--', alpha=0.5)
-#     ax.set_title(f'SITE: {site}')
-#     ax.set_xlabel('Date')
-#     ax.set_ylabel('Score')
-#     ax.legend(title='Score Type')
-#
-# for j in range(len(sites), len(axes)):
-#     fig.delaxes(axes[j])
-# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
-# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-# plt.xticks(rotation=90, fontsize=8)
-# plt.tight_layout()
-# plt.savefig('plots/figure4_part.pdf')
-# plt.show()
-#
-#
-data = pd.read_excel("data/COVID-data.xlsx")
-data['Datetime'] = pd.to_datetime(data['date'])
+data['Datetime'] = pd.to_datetime(data['DATE'])
 data['YearMonth'] = data['Datetime'].dt.to_period('M')
-monthly_avg = data.groupby(['location', 'YearMonth']).mean().reset_index()
+monthly_avg = data.groupby(['SITE', 'YearMonth']).mean().reset_index()
 monthly_avg['YearMonth'] = monthly_avg['YearMonth'].dt.to_timestamp()
+sites = monthly_avg['SITE'].unique()
+n_sites = len(sites)
+ncols = 1  # Number of columns in the subplot grid
+nrows = 4 # Calculate number of rows needed
 
-plt.Figure((8,5))
-sb.lineplot(x='YearMonth', y='new_deaths', hue='location', data=monthly_avg, style=False,
-            linewidth=2, markers='o', dashes=[(None, None)], palette='Set1')
-plt.title('Comparison of Scores Over Time by SITE')
-plt.xlabel('Date')
-plt.yscale('log')
-# Formatting x-axis to show both month and year
+fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(12, 8), sharex=True, sharey=True)
+axes = axes.flatten()
+for i, site in enumerate(sites):
+    ax = axes[i]
+    site_data = monthly_avg[monthly_avg['SITE'] == site]
+
+    sb.lineplot(x='YearMonth', y='TEXT_decision_social_prob', data=site_data, ax=ax, linewidth=2,
+                  label='TEXT_prob', color='#304269', marker='o')
+    sb.lineplot(x='YearMonth', y='HEADLINE_decision_social_prob', data=site_data, ax=ax, linewidth=2,
+                 label='HEADLINE_prob', color='#F26101',marker='o')
+    ax.axhline(y=0, color='red', linestyle='--', alpha=0.5)
+    ax.set_title(f'SITE: {site}')
+    ax.grid(color='lightgray')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Score')
+    ax.legend(title='Score Type')
+
+for j in range(len(sites), len(axes)):
+    fig.delaxes(axes[j])
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
 plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
 plt.xticks(rotation=90, fontsize=8)
 plt.tight_layout()
-plt.savefig('plots/figure4_part3.pdf')
+plt.savefig('plots/figure4_part.pdf')
 plt.show()
+#
+#
+'''
+Figure 4: covid data 
+'''
+# data = pd.read_excel("data/COVID-data.xlsx")
+# data['Datetime'] = pd.to_datetime(data['date'])
+# data['YearMonth'] = data['Datetime'].dt.to_period('M')
+# monthly_avg = data.groupby(['location', 'YearMonth']).mean().reset_index()
+# monthly_avg['YearMonth'] = monthly_avg['YearMonth'].dt.to_timestamp()
+#
+# plt.Figure((8,5))
+# sb.lineplot(x='YearMonth', y='new_cases_per_million', hue='location', data=monthly_avg, style=False,
+#             linewidth=2, markers='o', dashes=[(None, None)], palette='Set1')
+# plt.title('Comparison of Scores Over Time by SITE')
+# plt.xlabel('Date')
+# plt.yscale('log')
+# # Formatting x-axis to show both month and year
+# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# plt.xticks(rotation=90, fontsize=8)
+# plt.grid(color='lightgray')
+# plt.tight_layout()
+# plt.savefig('plots/figure4_part3.pdf')
+# plt.show()
+
+'''
+Figure 5
+'''
+# data = pd.read_excel("data/results.xlsx")
+# data['Datetime'] = pd.to_datetime(data['DATE'])
+# data['YearMonth'] = data['Datetime'].dt.to_period('M')
+# data_melted = data.melt(id_vars=['YearMonth', 'SITE'],
+#                         value_vars=['HEADLINE_decision_news_prob', 'TEXT_decision_news_prob',
+#                                     'HEADLINE_decision_social_prob', 'TEXT_decision_social_prob'],
+#                         var_name='ProbType', value_name='Probability')
+#
+# # Group by YearMonth and ProbType and compute the average
+# monthly_averages = data_melted.groupby(['YearMonth', 'ProbType', 'SITE'])['Probability'].mean().reset_index()
+# # Get unique sites
+# unique_sites = monthly_averages['SITE'].unique()
+#
+# # Create subplots (assuming you have 4 unique sites)
+# fig, axes = plt.subplots(nrows=4, ncols=1, figsize=(16, 12), sharex=True, sharey=True)
+#
+# # Flatten axes array for easy iteration
+# axes = axes.flatten()
+#
+# for ax, site in zip(axes, unique_sites):
+#     subset = monthly_averages[monthly_averages['SITE'] == site]
+#     sb.pointplot(data=subset, x='YearMonth', y='Probability', hue='ProbType', ax=ax)
+#     ax.hlines(y=0, xmin=0, xmax=len(subset['YearMonth'].unique()) - 1, linestyles='--', color='red')
+#     ax.set_title(f'{site} - Monthly Average of Probabilities')
+#     ax.set_xlabel('Month')
+#     ax.set_ylabel('Average Probability')
+#     ax.tick_params(axis='x', rotation=90)  # Rotate x-axis labels for better readability
+#     ax.grid(color='lightgray')
+#
+# # Adjust layout
+# plt.tight_layout()
+#
+# # Save the plot
+# plt.savefig('plots/figure5_part2.pdf')
+#
+# # Show the plot
+# plt.show()
